@@ -19,7 +19,7 @@ jobs:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number)
         run: |
-          gh pr list --base main --head development --repo ${{ github.repository }} --json number
+          gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number'
           # cat list.json
           # Crear pull request solo si no existe
           # gh pr create \
