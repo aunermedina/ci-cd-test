@@ -17,6 +17,7 @@ jobs:
       - name: Create Pull Request to Main
         if: success()  # Solo si el linting y testing pasaron
         env:
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
         run: |
           echo $PR_EXISTS
