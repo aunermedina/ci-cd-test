@@ -23,8 +23,8 @@ jobs:
 
         echo $NOTES
         echo $NOTES > release-notes.md
-        echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-        echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
+        # echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+        # echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
 
     - name: Display version and changelog
       id: display_data
