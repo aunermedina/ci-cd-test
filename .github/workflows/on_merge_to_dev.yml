@@ -4,56 +4,18 @@ on:
   push:
     branches:
       - development  # Se ejecuta cuando hay un push en la rama development
-  # pull_request:
-  #   branches:
-  #     - development  # Se ejecuta cuando hay un pull request hacia development
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  lint-test-pr:
+ jobs:
+  productionPromotion:
     runs-on: ubuntu-latest
-        
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Linting
+      - uses: actions/checkout@v4
+        with:
+          ref: production
+      - name: Reset promotion branch
         run: |
-          # Comando para ejecutar linting (ajusta según tu proyecto)
-          echo "npm install"
-          echo "npm run lint"
-          
-      - name: Run Tests
-        run: |
-          # Comando para ejecutar testing (ajusta según tu proyecto)
-          echo "npm test"
-
-      - name: Set output variables
-        id: vars
-        run: |
-          pr_title="[Test] Add report file $(date +%d-%m-%Y)"
-          pr_body="This PR was auto-generated on $(date +%d-%m-%Y) \
-            by [create-pull-request](https://github.com/peter-evans/create-pull-request)."
-          echo "pr_title=$pr_title" >> $GITHUB_OUTPUT
-          echo "pr_body=$pr_body" >> $GITHUB_OUTPUT
-
-      - name: Create Pull Request to Main
-        if: success()  # Solo si el linting y testing pasaron
-        id: cpr
+          git fetch origin main:main
+          git reset --hard main
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: update changelog
-          title: ${{ steps.vars.outputs.pr_title }}
-          body: ${{ steps.vars.outputs.pr_body }}
-          branch: development
-          base: main
-          labels: automated pr, test
-          token: ${{ secrets.REPO_TOKEN }}
-      - name: Check outputs
-        if: ${{ steps.cpr.outputs.pull-request-number }}
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          branch: production-promotion
