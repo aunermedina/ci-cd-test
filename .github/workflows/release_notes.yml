@@ -22,14 +22,12 @@ jobs:
         # NOTES=$(awk '/^## \['$VERSION'\]/,/^## /{if(!/^## /)print}' CHANGELOG.md)
 
         echo $NOTES
-        echo $NOTES > release-notes.md
-        # echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-        # echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
+        echo $(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d') > release-notes.md
+        echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
     - name: Display version and changelog
       id: display_data
       run: |
         echo "The extracted version is ${{ steps.changelog.outputs.VERSION }}"
         echo "Release notes are:"
-        echo "${{ steps.changelog.outputs.NOTES }}"
         cat release-notes.md
