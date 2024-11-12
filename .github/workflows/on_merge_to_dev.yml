@@ -19,6 +19,8 @@ jobs:
         env:
           PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
         run: |
+          echo $PR_EXISTS
+          echo $(gh pr list --base main --head development --repo ${{ github.repository }})
           if [ -z "$PR_EXISTS" ]; then
             # Crear pull request solo si no existe
             gh pr create \
