@@ -15,10 +15,7 @@ permissions:
 jobs:
   lint-test-pr:
     runs-on: ubuntu-latest
-    
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,6 +48,7 @@ jobs:
           commit-message: update changelog
           title: ${{ steps.vars.outputs.pr_title }}
           body: ${{ steps.vars.outputs.pr_body }}
+          branch: development
           base: main
           labels: automated pr, test
           token: ${{ secrets.REPO_TOKEN }}
