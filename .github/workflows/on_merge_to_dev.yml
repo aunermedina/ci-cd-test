@@ -53,7 +53,7 @@ jobs:
           body: ${{ steps.vars.outputs.pr_body }}
           base: main
           labels: automated pr, test
-          
+          token: ${{ secrets.REPO_TOKEN }}
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
