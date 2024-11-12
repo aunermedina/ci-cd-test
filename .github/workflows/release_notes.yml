@@ -16,8 +16,11 @@ jobs:
     - name: Extract version and changelog
       id: changelog
       run: |
-        VERSION=$(grep -Eo '## \[.*\]' CHANGELOG.md | head -n 1 | sed 's/## \[//' | sed 's/\]//')
-        NOTES=$(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d')
+        # VERSION=$(grep -Eo '## \[.*\]' CHANGELOG.md | head -n 1 | sed 's/## \[//' | sed 's/\]//')
+        # NOTES=$(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d')
+        VERSION=$(awk '/^## \[/{print $2; exit}' CHANGELOG.md | tr -d '[]')
+        # Extract the notes for this version until the next version header
+        NOTES=$(awk '/^## \['$VERSION'\]/,/^## /{if(!/^## /)print}' CHANGELOG.md)
         echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
         echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
 
