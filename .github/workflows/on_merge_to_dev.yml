@@ -5,9 +5,6 @@ on:
     branches:
       - development  # Se ejecuta cuando hay un push en la rama development
 
-permissions:
-  pull-requests: write
-
 jobs:
   lint-test-pr:
     runs-on: ubuntu-latest
@@ -19,15 +16,25 @@ jobs:
 
       - name: Create Pull Request to Main
         env:
-          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }})
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
+          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number)
         run: |
           gh pr list --base main --head development --repo ${{ github.repository }} > list.json
           cat list.json
-          # # Crear pull request solo si no existe
+          # Crear pull request solo si no existe
           # gh pr create \
           #   --title "Merge development into main" \
           #   --body "Automatically created pull request to merge changes from development to main" \
           #   --base main \
           #   --head development
+      # - name: Reset promotion branch
+      #   run: |
+      #     git fetch origin main:main
+      #     git reset --hard main
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v7
+      #   with:
+      #     branch: development
+      #     base: main
 
       
