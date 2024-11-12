@@ -1,0 +1,36 @@
+name: (CI) Push to Development
+
+on:
+  push:
+    branches:
+      - development  # Se ejecuta cuando hay un push en la rama development
+  # pull_request:
+  #   branches:
+  #     - development  # Se ejecuta cuando hay un pull request hacia development
+
+jobs:
+  lint-test-pr:
+    runs-on: ubuntu-latest
+    
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Linting
+        run: |
+          # Comando para ejecutar linting (ajusta según tu proyecto)
+          echo "npm install"
+          echo "npm run lint"
+          
+      - name: Run Tests
+        run: |
+          # Comando para ejecutar testing (ajusta según tu proyecto)
+          echo "npm test"
+
+      - name: Create Pull Request to Main
+        if: success()  # Solo si el linting y testing pasaron
+        uses: peter-evans/create-pull-request@v7
+       
