@@ -15,23 +15,16 @@ jobs:
           ref: development
 
       - name: Create Pull Request to Main
-        if: success()  # Solo si el linting y testing pasaron
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
         run: |
-          echo $PR_EXISTS
-          echo $(gh pr list --base main --head development --repo ${{ github.repository }})
-          if [ -z "$PR_EXISTS" ]; then
-            # Crear pull request solo si no existe
-            gh pr create \
-              --title "Merge development into main" \
-              --body "Automatically created pull request to merge changes from development to main" \
-              --base main \
-              --head development
-          else
-            echo "Pull request from development to main already exists."
-          fi
+          # Crear pull request solo si no existe
+          gh pr create \
+            --title "Merge development into main" \
+            --body "Automatically created pull request to merge changes from development to main" \
+            --base main \
+            --head development
       # - name: Reset promotion branch
       #   run: |
       #     git fetch origin main:main
