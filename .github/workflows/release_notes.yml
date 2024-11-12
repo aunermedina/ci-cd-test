@@ -16,13 +16,13 @@ jobs:
     - name: Extract version and changelog
       id: changelog
       run: |
-        # VERSION=$(grep -Eo '## \[.*\]' CHANGELOG.md | head -n 1 | sed 's/## \[//' | sed 's/\]//')
-        # NOTES=$(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d')
-        VERSION=$(awk '/^## \[/{print $2; exit}' CHANGELOG.md | tr -d '[]')
-        NOTES=$(awk '/^## \['$VERSION'\]/,/^## /{if(!/^## /)print}' CHANGELOG.md)
+        VERSION=$(grep -Eo '## \[.*\]' CHANGELOG.md | head -n 1 | sed 's/## \[//' | sed 's/\]//')
+        NOTES=$(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d')
+        # VERSION=$(awk '/^## \[/{print $2; exit}' CHANGELOG.md | tr -d '[]')
+        # NOTES=$(awk '/^## \['$VERSION'\]/,/^## /{if(!/^## /)print}' CHANGELOG.md)
 
+        echo $NOTES
         echo $NOTES > release-notes.md
-        cat release-notes.md
         echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
         echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
 
@@ -32,3 +32,4 @@ jobs:
         echo "The extracted version is ${{ steps.changelog.outputs.VERSION }}"
         echo "Release notes are:"
         echo "${{ steps.changelog.outputs.NOTES }}"
+        cat release-notes.md
