@@ -6,17 +6,18 @@ on:
       - development  # Se ejecuta cuando hay un push en la rama development
 
 jobs:
-productionPromotion:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: production
-    - name: Reset promotion branch
-      run: |
-        git fetch origin main:main
-        git reset --hard main
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v7
-      with:
-        branch: production-promotion
+  lint-test-pr:
+    runs-on: ubuntu-latest
+        
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: production
+      - name: Reset promotion branch
+        run: |
+          git fetch origin main:main
+          git reset --hard main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: production-promotion
