@@ -17,9 +17,9 @@ jobs:
       - name: Create Pull Request to Main
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
-          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number)
+          PR_EXISTS: gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number'
         run: |
-          echo "PR_EXISTS=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number')"
+          echo PR_EXISTS=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number')
           echo $PR_EXISTS
           echo -z $PR_EXISTS
           # Crear pull request solo si no existe
