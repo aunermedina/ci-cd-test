@@ -13,6 +13,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: development
+
+      - name: Create Pull Request to Main
+        if: success()  # Solo si el linting y testing pasaron
+        env:
+          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
+        run: |
+          if [ -z "$PR_EXISTS" ]; then
+            # Crear pull request solo si no existe
+            gh pr create \
+              --title "Merge development into main" \
+              --body "Automatically created pull request to merge changes from development to main" \
+              --base main \
+              --head development
+          else
+            echo "Pull request from development to main already exists."
+          fi
       # - name: Reset promotion branch
       #   run: |
       #     git fetch origin main:main
@@ -23,18 +39,4 @@ jobs:
       #     branch: development
       #     base: main
 
-      - name: Create Pull Request to Main
-      if: success()  # Solo si el linting y testing pasaron
-      env:
-        PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
-      run: |
-        if [ -z "$PR_EXISTS" ]; then
-          # Crear pull request solo si no existe
-          gh pr create \
-            --title "Merge development into main" \
-            --body "Automatically created pull request to merge changes from development to main" \
-            --base main \
-            --head development
-        else
-          echo "Pull request from development to main already exists."
-        fi
+      
