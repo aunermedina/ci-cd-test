@@ -1,0 +1,29 @@
+name: Release Notes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Extract version and changelog
+      id: changelog
+      run: |
+        VERSION=$(grep -Eo '## \[.*\]' CHANGELOG.md | head -n 1 | sed 's/## \[//' | sed 's/\]//')
+        NOTES=$(sed -n "/## \[$VERSION\]/,/^## /p" CHANGELOG.md | sed '$d')
+        echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "NOTES=$NOTES" >> "$GITHUB_OUTPUT"
+
+    - name: Display version and changelog
+      id: display_data
+      run: |
+        echo "The extracted version is ${{ steps.changelog.outputs.VERSION }}"
+        echo "Release notes are:"
+        echo "${{ steps.changelog.outputs.NOTES }}"
