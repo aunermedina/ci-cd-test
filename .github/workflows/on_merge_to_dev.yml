@@ -19,8 +19,8 @@ jobs:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number)
         run: |
-          gh pr list --base main --head development --repo ${{ github.repository }} > list.json
-          cat list.json
+          gh pr list --base main --head development --repo ${{ github.repository }} --json number
+          # cat list.json
           # Crear pull request solo si no existe
           # gh pr create \
           #   --title "Merge development into main" \
