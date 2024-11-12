@@ -17,8 +17,9 @@ jobs:
       - name: Create Pull Request to Main
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
-          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
+          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number)
         run: |
+          echo $PR_EXISTS
           # Crear pull request solo si no existe
           gh pr create \
             --title "Merge development into main" \
