@@ -21,7 +21,7 @@ jobs:
         id: check_pr
         run: |
           echo "pr_exists=$(gh pr list --base main --head development --json number | jq '.[0] // empty')" >> "GITHUB_OUTPUTS"
-          $string="hola"
+          echo string=$(gh pr list --base main --head development)
           if [[ -z "$string" ]]; then
             echo "String is empty"
           elif [[ -n "$string" ]]; then
