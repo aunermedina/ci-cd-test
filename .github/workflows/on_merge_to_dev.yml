@@ -24,7 +24,8 @@ jobs:
           
       - name: Create Pull Request to Main
         run: |
-          echo "string=${{ steps.check_pr.outputs.pr_exists }}"
+          gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number'
+          echo "string=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')"
           if [[ -z "$string" ]]; then
             echo "String is empty"
           elif [[ -n "$string" ]]; then
