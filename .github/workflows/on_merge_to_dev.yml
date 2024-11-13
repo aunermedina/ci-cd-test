@@ -25,7 +25,6 @@ jobs:
       - name: Create Pull Request to Main
         if: ${{ steps.check_pr.outputs.pr_exists == '' }}  # Solo si no existe un PR
         run: |
-          echo "${{ steps.check_pr.outputs.pr_exists }}"
           gh pr create \
             --title "Merge development into main" \
             --body "Automatically created pull request to merge changes from development to main" \
