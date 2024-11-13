@@ -29,6 +29,6 @@ jobs:
             --title "Merge development into main" \
             --body "Automatically created pull request to merge changes from development to main" \
             --base main \
-            --head development
+            --head development \
             --label pr-automated
       
