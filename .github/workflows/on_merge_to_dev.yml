@@ -8,32 +8,26 @@ on:
 jobs:
   lint-test-pr:
     runs-on: ubuntu-latest
+    env:
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
         
     steps:
       - uses: actions/checkout@v4
         with:
           ref: development
+        
+
+      - name: Check for Existing PR
+        id: check_pr
+        run: |
+          echo "pr_exists=$(gh pr list --base main --head development --json number | jq '.[0] // empty')" >> "GITHUB_OUTPUTS"
 
       - name: Create Pull Request to Main
-        env:
-          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
-          PR_EXISTS: $(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
+        if: ${{ steps.check_pr.outputs.pr_exists == '' }}  # Solo si no existe un PR
         run: |
-          COUNT=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number')
-          echo $PR_EXISTS
-          echo $COUNT
-          # Crear pull request solo si no existe
-          if [ -z "$PR_EXISTS" ]; then
-          #   # Crear pull request solo si no existe
-            echo "Pull request doesn't exist"
-            gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number'
-          #   gh pr create \
-          #     --title "Merge development into main" \
-          #     --body "Automatically created pull request to merge changes from development to main" \
-          #     --base main \
-          #     --head development
-          else
-            echo "Pull request from development to main already exists."
-          fi
-
+          gh pr create \
+            --title "Merge development into main" \
+            --body "Automatically created pull request to merge changes from development to main" \
+            --base main \
+            --head development
       
