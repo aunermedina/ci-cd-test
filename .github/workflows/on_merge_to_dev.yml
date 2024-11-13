@@ -4,33 +4,30 @@ on:
   push:
     branches:
       - development  # Se ejecuta cuando hay un push en la rama development
-  # pull_request:
-  #   branches:
-  #     - development  # Se ejecuta cuando hay un pull request hacia development
 
 jobs:
   lint-test-pr:
     runs-on: ubuntu-latest
-    
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Linting
-        run: |
-          # Comando para ejecutar linting (ajusta según tu proyecto)
-          echo "npm install"
-          echo "npm run lint"
-          
-      - name: Run Tests
-        run: |
-          # Comando para ejecutar testing (ajusta según tu proyecto)
-          echo "npm test"
-
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+              
       - name: Create Pull Request to Main
-        if: success()  # Solo si el linting y testing pasaron
-        uses: peter-evans/create-pull-request@v7
-       
+        run: |
+          PR_NUMBER=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR Open... creating one now..."
+            gh pr create \
+              --title "Merge development into main" \
+              --body "Automatically created pull request to merge changes from development to main" \
+              --base main \
+              --head development \
+              --label pr-automated
+          else
+            echo "PR already created"  
+          fi
+      
