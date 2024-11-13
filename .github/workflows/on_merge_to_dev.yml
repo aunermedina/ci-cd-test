@@ -15,30 +15,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: development
-        
-
-      - name: Check for Existing PR
-        id: check_pr
-        run: |
-          echo "pr_exists=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')" >> "GITHUB_OUTPUTS"
-          
+              
       - name: Create Pull Request to Main
         run: |
-          gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number'
-          string=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
-          if [[ -z "$string" ]]; then
-            echo "String is empty"
-            echo $string
+          PR_NUMBER=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR Open... creating one now..."
             gh pr create \
               --title "Merge development into main" \
               --body "Automatically created pull request to merge changes from development to main" \
               --base main \
               --head development \
               --label pr-automated
-          elif [[ -n "$string" ]]; then
-            echo "String is not empty"
-            echo "PR already created"
           else
-            echo "This never happens"
+            echo "PR already created"  
           fi
       
