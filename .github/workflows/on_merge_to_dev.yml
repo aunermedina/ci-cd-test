@@ -23,7 +23,7 @@ jobs:
           echo "pr_exists=$(gh pr list --base main --head development --json number | jq '.[0] // empty')" >> "GITHUB_OUTPUTS"
           
       - name: Create Pull Request to Main
-        if: steps.check_pr.outputs.pr_exists == ''  # Solo si no existe un PR
+        if: ${{ steps.check_pr.outputs.pr_exists == '' }}  # Solo si no existe un PR
         run: |
           echo "${{ steps.check_pr.outputs.pr_exists }}"
           gh pr create \
@@ -31,5 +31,5 @@ jobs:
             --body "Automatically created pull request to merge changes from development to main" \
             --base main \
             --head development
-            --label "pr automated"
+            --label pr-automated
       
