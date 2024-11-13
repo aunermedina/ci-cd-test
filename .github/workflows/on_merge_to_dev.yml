@@ -23,15 +23,17 @@ jobs:
           echo $PR_EXISTS
           echo $COUNT
           # Crear pull request solo si no existe
-          # if [ -z "$PR_EXISTS" ]; then
+          if [ -z "$PR_EXISTS" ]; then
           #   # Crear pull request solo si no existe
+            echo "Pull request doesn't exist"
+            gh pr list --base main --head development --repo ${{ github.repository }} --json number  | jq '.[].number'
           #   gh pr create \
           #     --title "Merge development into main" \
           #     --body "Automatically created pull request to merge changes from development to main" \
           #     --base main \
           #     --head development
-          # else
-          #   echo "Pull request from development to main already exists."
-          # fi
+          else
+            echo "Pull request from development to main already exists."
+          fi
 
       
