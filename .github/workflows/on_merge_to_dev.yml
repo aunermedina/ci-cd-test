@@ -21,6 +21,14 @@ jobs:
         id: check_pr
         run: |
           echo "pr_exists=$(gh pr list --base main --head development --json number | jq '.[0] // empty')" >> "GITHUB_OUTPUTS"
+          $string="hola"
+          if [[ -z "$string" ]]; then
+            echo "String is empty"
+          elif [[ -n "$string" ]]; then
+            echo "String is not empty"
+          else
+            echo "This never happens"
+          fi
 
       - name: Create Pull Request to Main
         if: ${{ steps.check_pr.outputs.pr_exists == '' }}  # Solo si no existe un PR
