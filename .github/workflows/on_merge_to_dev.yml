@@ -20,7 +20,7 @@ jobs:
       - name: Check for Existing PR
         id: check_pr
         run: |
-          echo "pr_exists=$(gh pr list --base main --head development --json number | jq '.[0] // empty')" >> "GITHUB_OUTPUTS"
+          echo "pr_exists=$(gh pr list --base main --head development --repo ${{ github.repository }} --json number | jq '.[].number')" >> "GITHUB_OUTPUTS"
           
       - name: Create Pull Request to Main
         run: |
